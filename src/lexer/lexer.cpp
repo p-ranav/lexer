@@ -9,7 +9,10 @@ Lexer::Lexer(const std::string& aFileName, const std::string& aSource) :
 
 std::string Lexer::ReadCharacter(bool aUpdateIndex) {
   std::string tResult = "";
-  int tLength = 1; // TODO: Change to GetUTF8SequenceLength(..)
+  int tLength = 0;
+
+  if (mIndex < mSource.size())
+    tLength = GetUTF8SequenceLength(&(mSource[mIndex]));
 
   for (int i = 0; i < tLength; i++)
     tResult += mSource[mIndex + i];
@@ -23,5 +26,5 @@ std::string Lexer::ReadCharacter(bool aUpdateIndex) {
 }
 
 std::string Lexer::PeekCharacter() {
-  return NextCharacter(false);
+  return ReadCharacter(false);
 }
