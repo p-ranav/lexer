@@ -7,17 +7,18 @@ Lexer::Lexer(const std::string& aFileName, const std::string& aSource) :
   mLine(1),
   mCursor(1) {}
 
-std::string Lexer::NextCharacter(bool aUpdateIndex) {
+std::string Lexer::ReadCharacter(bool aUpdateIndex) {
   std::string tResult = "";
   int tLength = 1; // TODO: Change to GetUTF8SequenceLength(..)
-  for (int i = 0; i < tLength; i++, mIndex++)
-    tResult += mSource[mIndex];
 
-  if (!aUpdateIndex)
-    mIndex -= tLength;
-  else
+  for (int i = 0; i < tLength; i++)
+    tResult += mSource[mIndex + i];
+
+  if (aUpdateIndex) {
+    mIndex += mIndex + tLength;
     mCursor += 1;
-  
+  }
+
   return tResult;
 }
 
