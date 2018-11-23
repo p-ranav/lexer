@@ -46,7 +46,34 @@ void Lexer::ReadComment() {
         mCursor = 1;
       }
     } else if (tPeekCharacter[0] == '*') { // block comment
-      // ReadBlockComment();
+      while(true) {
+        tPeekCharacter = PeekCharacter();
+        if (tPeekCharacter[0] == EOF) {
+          // TODO: error unterminated block comment
+        }
+
+        if (tPeekCharacter[0] == 0x0A) {
+          ReadCharacter();
+          mLine += 1; 
+          mCursor = 1;
+          continue;
+        }
+
+        if (tPeekCharacter[0] == '*') {
+          ReadCharacter();
+          tPeekCharacter = PeekCharacter();
+
+          if (tPeekCharacter[0] == EOF) {
+            // TODO: error unterminated block comment
+          }
+
+          if (tPeekCharacter[0] == '/') {
+            ReadCharacter();
+            return;
+          }
+        }
+        ReadCharacter();
+      }
     } else {
       Token tToken;
       tToken.mType = TokenType::SLASH;
