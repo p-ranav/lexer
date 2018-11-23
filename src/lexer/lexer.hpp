@@ -10,6 +10,18 @@ struct Lexer {
   int mCursor;                          // cursor position in mLine
   std::vector<std::string> mTokens;     // output of lexer - a list of tokens
 
+  // Constructs a Lexer object
   explicit Lexer(const std::string& aFileName, const std::string& aSource);
 
+  // NextCharacter returns next character from mSource
+  // NextCharacter supports multi-byte UTF-8 character
+  // if mSource = 世界, NextCharacter() will return "世" 
+  // NextCharacter advances mIndex
+  std::string NextCharacter(bool aUpdateIndex = true);
+
+  // PeekCharacter returns next character from mSource
+  // PeekCharacter supports multi-byte UTF-8 character
+  // if mSource = 世界, PeekCharacter() will return "世" 
+  // PeekCharacter does not advances mIndex
+  std::string PeekCharacter();
 };
