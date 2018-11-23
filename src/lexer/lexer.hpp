@@ -34,7 +34,5 @@ struct Lexer {
   // Consumes // as line comment
   // Classifies '/' as SLASH token
   void ReadComment();
-  void ConsumeLineComment();
-  void ConsumeBlockCOmment();
 
 };

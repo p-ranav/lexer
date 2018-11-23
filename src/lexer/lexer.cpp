@@ -38,7 +38,13 @@ void Lexer::ReadComment() {
   if (tPeekCharacter.size() > 0) {
     if (tPeekCharacter[0] == '/') { // line comment
       ReadCharacter();
-      // ReadLineComment();
+      while(tPeekCharacter[0] != 0x0A && mIndex < mSource.size())
+        tPeekCharacter = ReadCharacter();
+
+      if (tPeekCharacter[0] != EOF) {
+        mLine += 1;
+        mCursor = 1;
+      }
     } else if (tPeekCharacter[0] == '*') { // block comment
       // ReadBlockComment();
     } else {
