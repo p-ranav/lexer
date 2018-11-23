@@ -14,10 +14,8 @@ endif()
 file(GLOB LEXER_SOURCES 
   "src/lexer/*.cpp" 
   "src/lexer/*.hpp"
-  "src/lexer/token/*.hpp"
-  "src/lexer/token/*.cpp"
   )
 ADD_LIBRARY(LEXER STATIC ${LEXER_SOURCES})
-INCLUDE_DIRECTORIES("src/lexer" "src/lexer/token")
+INCLUDE_DIRECTORIES("src/lexer")
 set_target_properties(LEXER PROPERTIES OUTPUT_NAME lexer)
 TARGET_LINK_LIBRARIES(LEXER)
