@@ -49,6 +49,12 @@ void Lexer::ReadComment() {
       while(true) {
         tPeekCharacter = PeekCharacter();
         if (tPeekCharacter[0] == EOF) {
+          Token tToken;
+          tToken.mType = TokenType::ILLEGAL;
+          tToken.mLiteral = tCharacter;
+          tToken.mFileName = mFileName; 
+          tToken.mLine = mLine;
+          tToken.mCursor = mCursor;
           // TODO: error unterminated block comment
         }
 
@@ -64,6 +70,12 @@ void Lexer::ReadComment() {
           tPeekCharacter = PeekCharacter();
 
           if (tPeekCharacter[0] == EOF) {
+            Token tToken;
+            tToken.mType = TokenType::ILLEGAL;
+            tToken.mLiteral = tCharacter;
+            tToken.mFileName = mFileName; 
+            tToken.mLine = mLine;
+            tToken.mCursor = mCursor;
             // TODO: error unterminated block comment
           }
 
