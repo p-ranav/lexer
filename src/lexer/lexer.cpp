@@ -14,6 +14,8 @@ std::string Lexer::ReadCharacter(bool aUpdateIndex) {
   if (mIndex < mSource.size())
     tLength = GetUTF8SequenceLength(&(mSource[mIndex]));
 
+  assert(tLength >= 0);
+
   for (int i = 0; i < tLength; i++)
     tResult += mSource[mIndex + i];
 
@@ -27,4 +29,26 @@ std::string Lexer::ReadCharacter(bool aUpdateIndex) {
 
 std::string Lexer::PeekCharacter() {
   return ReadCharacter(false);
+}
+
+void Lexer::ReadComment() {
+  std::string tCharacter = ReadCharacter();
+  assert(tCharacter == "/");
+  std::string tPeekCharacter = PeekCharacter();
+  if (tPeekCharacter.size() > 0) {
+    if (tPeekCharacter[0] == '/') { // line comment
+      ReadCharacter();
+      // ReadLineComment();
+    } else if (tPeekCharacter[0] == '*') { // block comment
+      // ReadBlockComment();
+    } else {
+      Token tToken;
+      tToken.mType = TokenType::SLASH;
+      tToken.mLiteral = tCharacter;
+      tToken.mFileName = mFileName; 
+      tToken.mLine = mLine;
+      tToken.mCursor = mCursor - 1;
+      mTokens.push_back(tToken);
+    }
+  }
 }
