@@ -3,7 +3,7 @@
 
 enum TokenType {
   // Special tokens
-  ILLEGAL, EOF,
+  ILLEGAL, EOF_,
 
   // Literals
   IDENTIFIER, CHARACTER, STRING, INTEGER, DOUBLE,
@@ -11,7 +11,7 @@ enum TokenType {
   // Operators
   PLUS, MINUS, STAR, SLASH, PERCENT, BANG,
   EQUAL, BANG_EQUAL, EQUAL_EQUAL, 
-  GREATER, GREATER_EQUAL, LESSER, LESSER_EQUAL
+  GREATER, GREATER_EQUAL, LESSER, LESSER_EQUAL,
 
   // Delimiters
   DOT, COMMA, COLON, SEMICOLON,
@@ -26,9 +26,9 @@ enum TokenType {
 };
 
 struct Token {
-  std::string mType;
-  std::string mLiteral;
-  std::string mFileName;
-  int mLine;
-  int mCursor;
+  TokenType mType;         // type of lexer token, e.g., INTEGER
+  std::string mLiteral;    // value of lexer token, e.g., "5"
+  std::string mFileName;   // source file of token
+  int mLine;               // line number in source file
+  int mCursor;             // cursor number in line of source file
 };
