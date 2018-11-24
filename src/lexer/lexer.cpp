@@ -132,6 +132,57 @@ void Lexer::ReadNumber(const std::string& aCharacter) {
   mTokens.push_back(tToken);
 }
 
+void Lexer::ReadString() {
+  Token tToken;
+  tToken.mFileName = mFileName;
+  tToken.mLine = mLine;
+  tToken.mCursor = mCursor;
+  tToken.mType = TokenType::STRING;
+  tToken.mLiteral = "";
+
+  std::string tCharacter = ReadCharacter();
+
+  while(true) {
+    tCharacter = PeekCharacter();
+    if (tCharacter[0] == '\\') {
+      tCharacter = ReadCharacter();
+      if (tCharacter[0] == '\"' || tCharacter[0] == '\\') {
+        tCharacter = ReadCharacter();
+        if (tCharacter == "n") {
+          tToken.mLiteral += '\n';
+        } else {
+          // TODO: unrecognized escape sequence
+          tToken.mLiteral += tCharacter;
+        }
+        continue;
+      } else if (tCharacter[0] == 'n') {
+        tCharacter = ReadCharacter();
+        tToken.mLiteral += '\n';
+      }
+
+      if (tCharacter[0] == 0x0a || tCharacter[0] == EOF) {
+        // TODO: report unterminated string literal
+      }
+
+      tToken.mLiteral += tCharacter;
+      continue;
+    }
+
+    if (tCharacter[0] != '\"' && tCharacter[0] != EOF) {
+      tCharacter = ReadCharacter();
+      tToken.mLiteral += tCharacter;
+      continue;
+    }
+
+    if (tCharacter[0] == 0x0A || tCharacter[0] == EOF) {
+      // TODO: report unterminated string literal
+    }
+    ReadCharacter();
+    break;
+  }
+  mTokens.push_back(tToken);
+}
+
 void Lexer::ReadWhitespace() {
   ReadCharacter();
   while(true) {
@@ -152,6 +203,8 @@ void Lexer::Tokenize() {
         ReadComment();
       } else if (isdigit(tCharacter[0])) { // number
         ReadNumber(tCharacter);
+      } else if (tCharacter[0] == '"') {
+        ReadString();
       } else if (tCharacter[0] == ' ' || // whitespace
                  tCharacter[0] == 0x08 ||
                  tCharacter[0] == 0x09 || 
@@ -169,6 +222,6 @@ void Lexer::Tokenize() {
   }
 
   for (auto& tToken : mTokens)
-    std::cout << "[LEXER] " << tToken.mLine << " " 
+    std::cout << "[LEXER] " << tToken.mLine << ":" 
       << tToken.mCursor << " " << tToken.mLiteral << std::endl;
 }

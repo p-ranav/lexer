@@ -42,6 +42,11 @@ struct Lexer {
   // Floating point numbers are classified as DOUBLE tokens
   void ReadNumber(const std::string& aCharacter);
 
+  // ReadString consumes a quoted string literal
+  // Parses double-quoted string-literal, e.g., "Hello"
+  // ReadString supports multi-byte UTF-8 characters
+  void ReadString(); 
+
   // ReadWhitespace consumes white space characters
   // Whitespace includes ' ', 0x09, 0x08 and 0x0D
   void ReadWhitespace();
