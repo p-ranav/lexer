@@ -107,6 +107,31 @@ void Lexer::ReadComment() {
   }
 }
 
+void Lexer::ReadNumber(const std::string& aCharacter) {
+  Token tToken;
+  tToken.mFileName = mFileName;
+  tToken.mLine = mLine;
+  tToken.mCursor = mCursor;
+  tToken.mType = TokenType::INTEGER;
+  tToken.mLiteral = aCharacter;
+
+  std::string tCharacter = ReadCharacter();
+  while(true) {
+    tCharacter = PeekCharacter();
+    if (tCharacter.size() == 1 && 
+       (tCharacter[0] == '.' || isdigit(tCharacter[0]))) {
+      tCharacter = ReadCharacter();
+      tToken.mLiteral += tCharacter;
+      continue;
+    }
+    break;
+  }
+  if (tToken.mLiteral.find(".") != std::string::npos) {
+    tToken.mType = TokenType::DOUBLE;
+  }
+  mTokens.push_back(tToken);
+}
+
 void Lexer::ReadWhitespace() {
   ReadCharacter();
   while(true) {
@@ -126,7 +151,7 @@ void Lexer::Tokenize() {
       if (tCharacter[0] == '/') { // comment
         ReadComment();
       } else if (isdigit(tCharacter[0])) { // number
-        // ReadNumber();
+        ReadNumber(tCharacter);
       } else if (tCharacter[0] == ' ' || // whitespace
                  tCharacter[0] == 0x08 ||
                  tCharacter[0] == 0x09 || 

@@ -36,6 +36,12 @@ struct Lexer {
   // Consumes and classifies '/' as SLASH token
   void ReadComment();
 
+  // ReadNumber consumes a number
+  // Numbers can be integer or floating point numbers
+  // Integer numbers are classified as INTEGER tokens
+  // Floating point numbers are classified as DOUBLE tokens
+  void ReadNumber(const std::string& aCharacter);
+
   // ReadWhitespace consumes white space characters
   // Whitespace includes ' ', 0x09, 0x08 and 0x0D
   void ReadWhitespace();
