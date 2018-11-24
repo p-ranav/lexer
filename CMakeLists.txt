@@ -33,3 +33,18 @@ TARGET_LINK_LIBRARIES(COMPILER LEXER)
 # Set ${PROJECT_NAME} as the startup project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT COMPILER)
 set_property(TARGET COMPILER PROPERTY CXX_STANDARD 17)
+
+# Tests
+file(GLOB TESTS_SOURCES 
+    "tests/*.cpp" 
+    "tests/*.hpp"
+)
+INCLUDE_DIRECTORIES("tests")
+ADD_EXECUTABLE(TESTS ${TESTS_SOURCES})
+set_target_properties(TESTS PROPERTIES OUTPUT_NAME tests) # tests.exe
+TARGET_LINK_LIBRARIES(TESTS LEXER)
+
+# make check - runs unit tests
+if (UNIX)
+add_custom_target(check COMMAND ./tests)
+endif(UNIX)
