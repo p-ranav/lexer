@@ -43,6 +43,10 @@
 //   [1000 00000000, 11111111 11111111]: three bytes
 // [U+10000, U+10FFFF] 
 //   [1 00000000 00000000, 10000 00000000 00000000]: four bytes
+static bool IsUTF8(char c) {
+  return (((c)&0xC0) != 0x80);
+}
+
 static const char TrailingBytesForUTF8[256] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -63,6 +67,6 @@ static const char TrailingBytesForUTF8[256] = {
 };
 
 // GetUTF8SequenceLength returns the length of UTF-8 sequence
-int GetUTF8SequenceLength(char * c) {
+static int GetUTF8SequenceLength(char * c) {
   return TrailingBytesForUTF8[(unsigned int)(unsigned char)c[0]] + 1;
 }
