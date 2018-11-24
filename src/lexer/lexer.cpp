@@ -16,11 +16,12 @@ std::string Lexer::ReadCharacter(bool aUpdateIndex) {
 
   assert(tLength >= 0);
 
-  for (int i = 0; i < tLength; i++)
-    tResult += mSource[mIndex + i];
+  for (int i = 0; i < tLength; i++, mIndex++)
+    tResult += mSource[mIndex];
 
-  if (aUpdateIndex) {
-    mIndex += mIndex + tLength;
+  if (!aUpdateIndex) {
+    mIndex -= tLength;
+  } else {
     mCursor += 1;
   }
 
@@ -33,12 +34,12 @@ std::string Lexer::PeekCharacter() {
 
 void Lexer::ReadComment() {
   std::string tCharacter = ReadCharacter();
-  assert(tCharacter == "/");
   std::string tPeekCharacter = PeekCharacter();
   if (tPeekCharacter.size() > 0) {
     if (tPeekCharacter[0] == '/') { // line comment
       ReadCharacter();
-      while(tPeekCharacter[0] != 0x0A && mIndex < mSource.size())
+      while(tPeekCharacter[0] != 0x0A && tPeekCharacter[0] != EOF
+        && mIndex < mSource.size())
         tPeekCharacter = ReadCharacter();
 
       if (tPeekCharacter[0] != EOF) {
@@ -51,7 +52,7 @@ void Lexer::ReadComment() {
         if (tPeekCharacter[0] == EOF) {
           Token tToken;
           tToken.mType = TokenType::ILLEGAL;
-          tToken.mLiteral = tCharacter;
+          tToken.mLiteral = tPeekCharacter;
           tToken.mFileName = mFileName; 
           tToken.mLine = mLine;
           tToken.mCursor = mCursor;
@@ -72,7 +73,7 @@ void Lexer::ReadComment() {
           if (tPeekCharacter[0] == EOF) {
             Token tToken;
             tToken.mType = TokenType::ILLEGAL;
-            tToken.mLiteral = tCharacter;
+            tToken.mLiteral = tPeekCharacter;
             tToken.mFileName = mFileName; 
             tToken.mLine = mLine;
             tToken.mCursor = mCursor;
@@ -95,5 +96,54 @@ void Lexer::ReadComment() {
       tToken.mCursor = mCursor - 1;
       mTokens.push_back(tToken);
     }
+  } else {
+    Token tToken;
+    tToken.mType = TokenType::SLASH;
+    tToken.mLiteral = tCharacter;
+    tToken.mFileName = mFileName; 
+    tToken.mLine = mLine;
+    tToken.mCursor = mCursor - 1;
+    mTokens.push_back(tToken);
   }
+}
+
+void Lexer::ReadWhitespace() {
+  ReadCharacter();
+  while(true) {
+    std::string tCharacter = PeekCharacter();
+    if (tCharacter[0] == ' ' || tCharacter[0] == 0x08 ||
+        tCharacter[0] == 0x09 || tCharacter[0] == 0x0D) {
+      tCharacter = ReadCharacter();
+    } else return;
+  }
+}
+
+void Lexer::Tokenize() {
+  for (mIndex = 0; mIndex < mSource.size();) {
+    if (IsUTF8(mSource[mIndex])) {
+      std::string tCharacter = PeekCharacter();
+
+      if (tCharacter[0] == '/') { // comment
+        ReadComment();
+      } else if (isdigit(tCharacter[0])) { // number
+        // ReadNumber();
+      } else if (tCharacter[0] == ' ' || // whitespace
+                 tCharacter[0] == 0x08 ||
+                 tCharacter[0] == 0x09 || 
+                 tCharacter[0] == 0x0D) {
+        ReadWhitespace();
+      }
+
+      if (tCharacter[0] == '\n') {
+        mLine += 1;
+        ReadCharacter();
+        mCursor = 1;
+      }
+
+    }
+  }
+
+  for (auto& tToken : mTokens)
+    std::cout << "[LEXER] " << tToken.mLine << " " 
+      << tToken.mCursor << " " << tToken.mLiteral << std::endl;
 }

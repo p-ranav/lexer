@@ -1,6 +1,7 @@
 #pragma once
 #include <utf8.hpp>
 #include <token.hpp>
+#include <iostream>
 #include <vector>
 #include <cassert>
 
@@ -32,7 +33,15 @@ struct Lexer {
   // ReadComment consumes block and line comments
   // Consumes /* */ as block comment
   // Consumes // as line comment
-  // Classifies '/' as SLASH token
+  // Consumes and classifies '/' as SLASH token
   void ReadComment();
+
+  // ReadWhitespace consumes white space characters
+  // Whitespace includes ' ', 0x09, 0x08 and 0x0D
+  void ReadWhitespace();
+
+  // Tokenize transforms the input source (mSource)
+  // into a list of lexical tokens (mTokens)
+  void Tokenize();
 
 };
