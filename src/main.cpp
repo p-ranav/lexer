@@ -7,5 +7,9 @@ int main() {
   lexer.mLine = 1; lexer.mCursor = 1;
   lexer.mSource = "\"Hello World\" \"Hello, 世界\" ";
   lexer.Tokenize();
+
+  lexer.mLine = 1; lexer.mCursor = 1;
+  lexer.mSource = "!= == >= <= += -= *= /= %=";
+  lexer.Tokenize();
   return 0;
 }

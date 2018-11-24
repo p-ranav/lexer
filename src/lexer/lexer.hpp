@@ -18,14 +18,14 @@ struct Lexer {
 
   // ReadCharacter returns next character from mSource
   // ReadCharacter supports multi-byte UTF-8 character
-  // - this is why the return type is std::string
+  // - this is why the return type is std::string and not char
   // if mSource = 世界, ReadCharacter() will return "世" 
   // ReadCharacter advances mIndex
   std::string ReadCharacter(bool aUpdateIndex = true);
 
   // PeekCharacter returns next character from mSource
   // PeekCharacter supports multi-byte UTF-8 character
-  // - this is why the return type is std::string
+  // - this is why the return type is std::string and not char
   // if mSource = 世界, PeekCharacter() will return "世" 
   // PeekCharacter does not advances mIndex
   std::string PeekCharacter();
@@ -46,6 +46,12 @@ struct Lexer {
   // Parses double-quoted string-literal, e.g., "Hello"
   // ReadString supports multi-byte UTF-8 characters
   void ReadString(); 
+
+  // ReadPunctuation consumes a punctuation token
+  // If the character can be classified as a TokenType,
+  // ReadPunctuation will classify this token
+  // If not, ReadPunctuation will report an error 
+  void ReadPunctuation(const std::string& aCharacter);
 
   // ReadWhitespace consumes white space characters
   // Whitespace includes ' ', 0x09, 0x08 and 0x0D

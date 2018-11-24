@@ -94,6 +94,12 @@ void Lexer::ReadComment() {
       tToken.mFileName = mFileName; 
       tToken.mLine = mLine;
       tToken.mCursor = mCursor - 1;
+      std::string tPeekCharacter = PeekCharacter();
+      if (tPeekCharacter == "=") {
+        ReadCharacter();
+        tToken.mLiteral = "/=";
+        tToken.mType = TokenType::SLASH_EQUAL;
+      }
       mTokens.push_back(tToken);
     }
   } else {
@@ -103,6 +109,12 @@ void Lexer::ReadComment() {
     tToken.mFileName = mFileName; 
     tToken.mLine = mLine;
     tToken.mCursor = mCursor - 1;
+    std::string tPeekCharacter = PeekCharacter();
+    if (tPeekCharacter == "=") {
+      ReadCharacter();
+      tToken.mLiteral = "/=";
+      tToken.mType = TokenType::SLASH_EQUAL;
+    }
     mTokens.push_back(tToken);
   }
 }
@@ -183,6 +195,96 @@ void Lexer::ReadString() {
   mTokens.push_back(tToken);
 }
 
+void Lexer::ReadPunctuation(const std::string& aCharacter) {
+  Token tToken;
+  tToken.mFileName = mFileName;
+  tToken.mLine = mLine;
+  tToken.mCursor = mCursor;
+  tToken.mLiteral = aCharacter;
+  ReadCharacter();
+
+  if (aCharacter == ".") {
+    tToken.mType = TokenType::DOT;
+  } else if (aCharacter == ",") {
+    tToken.mType = TokenType::COMMA;
+  } else if (aCharacter == ":") {
+    tToken.mType = TokenType::COLON;
+  } else if (aCharacter == ";") {
+    tToken.mType = TokenType::SEMICOLON;
+  } else if (aCharacter == ">") {
+    tToken.mType = TokenType::GREATER;
+  } else if (aCharacter == "<") {
+    tToken.mType = TokenType::LESSER;
+  } else if (aCharacter == "+") {
+    tToken.mType = TokenType::PLUS;
+  } else if (aCharacter == "-") {
+    tToken.mType = TokenType::MINUS;
+  } else if (aCharacter == "*") {
+    tToken.mType = TokenType::STAR;
+  } else if (aCharacter == "/") {
+    tToken.mType = TokenType::SLASH;
+  } else if (aCharacter == "%") {
+    tToken.mType = TokenType::PERCENT;
+  } else if (aCharacter == "=") {
+    tToken.mType = TokenType::EQUAL;
+  } else if (aCharacter == "(") {
+    tToken.mType = TokenType::LEFT_PAREN;
+  } else if (aCharacter == ")") {
+    tToken.mType = TokenType::RIGHT_PAREN;
+  } else if (aCharacter == "{") {
+    tToken.mType = TokenType::LEFT_BRACE;
+  } else if (aCharacter == "}") {
+    tToken.mType = TokenType::RIGHT_BRACE;
+  } else if (aCharacter == "[") {
+    tToken.mType = TokenType::LEFT_BRACKET;
+  } else if (aCharacter == "]") {
+    tToken.mType = TokenType::RIGHT_BRACKET;
+  } else if (aCharacter == "!") {
+    tToken.mType = TokenType::BANG;
+  }
+
+  std::string tPeekCharacter = PeekCharacter();
+  if (aCharacter == "!" && tPeekCharacter == "=") {
+    ReadCharacter();
+    tToken.mLiteral = "!=";
+    tToken.mType = TokenType::BANG_EQUAL;
+  } else if (aCharacter == "=" && tPeekCharacter == "=") {
+    ReadCharacter();
+    tToken.mLiteral = "==";
+    tToken.mType = TokenType::EQUAL_EQUAL;
+  } else if (aCharacter == ">" && tPeekCharacter == "=") {
+    ReadCharacter();
+    tToken.mLiteral = ">=";
+    tToken.mType = TokenType::GREATER_EQUAL;
+  } else if (aCharacter == "<" && tPeekCharacter == "=") {
+    ReadCharacter();
+    tToken.mLiteral = "<=";
+    tToken.mType = TokenType::LESSER_EQUAL;
+  } else if (aCharacter == "+" && tPeekCharacter == "=") {
+    ReadCharacter();
+    tToken.mLiteral = "+=";
+    tToken.mType = TokenType::PLUS_EQUAL;
+  } else if (aCharacter == "-" && tPeekCharacter == "=") {
+    ReadCharacter();
+    tToken.mLiteral = "-=";
+    tToken.mType = TokenType::MINUS_EQUAL;
+  } else if (aCharacter == "*" && tPeekCharacter == "=") {
+    ReadCharacter();
+    tToken.mLiteral = "*=";
+    tToken.mType = TokenType::STAR_EQUAL;
+  } else if (aCharacter == "/" && tPeekCharacter == "=") {
+    ReadCharacter();
+    tToken.mLiteral = "/=";
+    tToken.mType = TokenType::SLASH_EQUAL;
+  } else if (aCharacter == "%" && tPeekCharacter == "=") {
+    ReadCharacter();
+    tToken.mLiteral = "%=";
+    tToken.mType = TokenType::PERCENT_EQUAL;
+  }
+
+  mTokens.push_back(tToken);
+}
+
 void Lexer::ReadWhitespace() {
   ReadCharacter();
   while(true) {
@@ -205,6 +307,8 @@ void Lexer::Tokenize() {
         ReadNumber(tCharacter);
       } else if (tCharacter[0] == '"') {
         ReadString();
+      } else if (ispunct(tCharacter[0])) {
+        ReadPunctuation(tCharacter);
       } else if (tCharacter[0] == ' ' || // whitespace
                  tCharacter[0] == 0x08 ||
                  tCharacter[0] == 0x09 || 

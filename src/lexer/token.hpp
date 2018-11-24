@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <map>
 
 enum TokenType {
   // Special tokens
@@ -12,6 +13,7 @@ enum TokenType {
   PLUS, MINUS, STAR, SLASH, PERCENT, BANG,
   EQUAL, BANG_EQUAL, EQUAL_EQUAL, 
   GREATER, GREATER_EQUAL, LESSER, LESSER_EQUAL,
+  PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, PERCENT_EQUAL,
 
   // Delimiters
   DOT, COMMA, COLON, SEMICOLON,
