@@ -53,6 +53,17 @@ struct Lexer {
   // If not, ReadPunctuation will report an error 
   void ReadPunctuation(const std::string& aCharacter);
 
+  // IsIdentifier returns true if aCharacter is a valid 
+  // identifier, e.g., x, y, abc_def, abc123, etc.
+  // IsIdentifier supports UTF-8 characters and treats
+  // all characters >= 0x80 as valid identifiers
+  bool IsIdentifier(const std::string& aCharacter);
+
+  // ReadIdentifier consumes a valid identifier
+  // ReadIdentifier supports UTF-8 characters
+  // ReadIdentifier classifies keywords in TokenType
+  void ReadIdentifier();
+
   // ReadWhitespace consumes white space characters
   // Whitespace includes ' ', 0x09, 0x08 and 0x0D
   void ReadWhitespace();

@@ -241,6 +241,8 @@ void Lexer::ReadPunctuation(const std::string& aCharacter) {
     tToken.mType = TokenType::RIGHT_BRACKET;
   } else if (aCharacter == "!") {
     tToken.mType = TokenType::BANG;
+  } else {
+    // TODO: report unrecognized token error
   }
 
   std::string tPeekCharacter = PeekCharacter();
@@ -252,6 +254,10 @@ void Lexer::ReadPunctuation(const std::string& aCharacter) {
     ReadCharacter();
     tToken.mLiteral = "==";
     tToken.mType = TokenType::EQUAL_EQUAL;
+  } else if (aCharacter == ":" && tPeekCharacter == "=") {
+    ReadCharacter();
+    tToken.mLiteral = ":=";
+    tToken.mType = TokenType::COLON_EQUAL;
   } else if (aCharacter == ">" && tPeekCharacter == "=") {
     ReadCharacter();
     tToken.mLiteral = ">=";
@@ -280,6 +286,93 @@ void Lexer::ReadPunctuation(const std::string& aCharacter) {
     ReadCharacter();
     tToken.mLiteral = "%=";
     tToken.mType = TokenType::PERCENT_EQUAL;
+  } else if (aCharacter == "_" && IsIdentifier(tPeekCharacter)) {
+    std::string tCharacter = "";
+    tToken.mLiteral = "_";
+    tToken.mType = TokenType::IDENTIFIER;
+    while(true) {
+      tCharacter = PeekCharacter();
+      if (IsIdentifier(tCharacter)) {
+        tToken.mLiteral += tCharacter;
+        tCharacter = ReadCharacter();
+        continue;
+      }
+      break;
+    }
+  }
+
+  mTokens.push_back(tToken);
+}
+
+bool Lexer::IsIdentifier(const std::string& aCharacter) {
+  if (aCharacter.size() == 0) {
+    return false;
+  }
+  for (auto& tCharacter : aCharacter) {
+    if ((tCharacter >= 'A' && tCharacter <= 'Z') ||
+        (tCharacter >= 'a' && tCharacter <= 'z') ||
+        (tCharacter >= '0' && tCharacter <= '9') ||
+        (tCharacter == '_') ||
+        ((unsigned char)tCharacter >= 0x80)) {
+      continue;
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
+
+void Lexer::ReadIdentifier() {
+  Token tToken;
+  tToken.mFileName = mFileName;
+  tToken.mLine = mLine;
+  tToken.mCursor = mCursor;
+  tToken.mType = TokenType::IDENTIFIER;
+  tToken.mLiteral = "";
+
+  std::string tCharacter = "";
+  while(true) {
+    tCharacter = PeekCharacter();
+    if (IsIdentifier(tCharacter)) {
+      tToken.mLiteral += tCharacter;
+      tCharacter = ReadCharacter();
+      continue;
+    }
+    break;
+  }
+
+  if (tToken.mLiteral == "null") {
+    tToken.mType = TokenType::NULL_;
+  } else if (tToken.mLiteral == "true") {
+    tToken.mType = TokenType::TRUE;
+  } else if (tToken.mLiteral == "false") {
+    tToken.mType = TokenType::FALSE;
+  } else if (tToken.mLiteral == "if") {
+    tToken.mType = TokenType::IF;
+  } else if (tToken.mLiteral == "else") {
+    tToken.mType = TokenType::ELSE;
+  } else if (tToken.mLiteral == "while") {
+    tToken.mType = TokenType::WHILE;
+  } else if (tToken.mLiteral == "for") {
+    tToken.mType = TokenType::FOR;
+  } else if (tToken.mLiteral == "in") {
+    tToken.mType = TokenType::IN;
+  } else if (tToken.mLiteral == "and") {
+    tToken.mType = TokenType::AND;
+  } else if (tToken.mLiteral == "or") {
+    tToken.mType = TokenType::OR;
+  } else if (tToken.mLiteral == "not") {
+    tToken.mType = TokenType::NOT;
+  } else if (tToken.mLiteral == "break") {
+    tToken.mType = TokenType::BREAK;
+  } else if (tToken.mLiteral == "continue") {
+    tToken.mType = TokenType::CONTINUE;
+  } else if (tToken.mLiteral == "function") {
+    tToken.mType = TokenType::FUNCTION;
+  } else if (tToken.mLiteral == "return") {
+    tToken.mType = TokenType::RETURN;
+  } else if (tToken.mLiteral == "import") {
+    tToken.mType = TokenType::IMPORT;
   }
 
   mTokens.push_back(tToken);
@@ -305,10 +398,12 @@ void Lexer::Tokenize() {
         ReadComment();
       } else if (isdigit(tCharacter[0])) { // number
         ReadNumber(tCharacter);
-      } else if (tCharacter[0] == '"') {
+      } else if (tCharacter[0] == '"') { // string
         ReadString();
-      } else if (ispunct(tCharacter[0])) {
+      } else if (ispunct(tCharacter[0])) { // punctuation
         ReadPunctuation(tCharacter);
+      } else if (IsIdentifier(tCharacter)) { // identifier
+        ReadIdentifier();
       } else if (tCharacter[0] == ' ' || // whitespace
                  tCharacter[0] == 0x08 ||
                  tCharacter[0] == 0x09 || 
@@ -316,7 +411,7 @@ void Lexer::Tokenize() {
         ReadWhitespace();
       }
 
-      if (tCharacter[0] == '\n') {
+      if (tCharacter[0] == '\n') { // newline
         mLine += 1;
         ReadCharacter();
         mCursor = 1;
