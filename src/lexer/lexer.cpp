@@ -420,7 +420,11 @@ void Lexer::Tokenize() {
     }
   }
 
-  for (auto& tToken : mTokens)
-    std::cout << "[LEXER] " << tToken.mLine << ":" 
-      << tToken.mCursor << " " << tToken.mLiteral << std::endl;
+  Token tToken;
+  tToken.mFileName = mFileName;
+  tToken.mLine = mLine;
+  tToken.mCursor = mCursor;
+  tToken.mType = TokenType::EOF_;
+  tToken.mLiteral = "";
+  mTokens.push_back(tToken);
 }
