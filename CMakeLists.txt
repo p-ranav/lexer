@@ -37,9 +37,9 @@ set_property(TARGET COMPILER PROPERTY CXX_STANDARD 17)
 # Tests
 file(GLOB TESTS_SOURCES 
     "tests/*.cpp" 
-    "tests/*.hpp"
+    "tests/lexer/*.hpp"
 )
-INCLUDE_DIRECTORIES("tests")
+INCLUDE_DIRECTORIES("tests" "tests/lexer")
 ADD_EXECUTABLE(TESTS ${TESTS_SOURCES})
 set_target_properties(TESTS PROPERTIES OUTPUT_NAME tests) # tests.exe
 TARGET_LINK_LIBRARIES(TESTS LEXER)
