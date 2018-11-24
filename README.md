@@ -15,4 +15,4 @@ $ make
 $ make check
 ```
 
-<img src="https://i.imgur.com/PkaAiUz.png" alt="UTF-8 Lexer"/>
+<img src="https://i.imgur.com/gAMueGb.png" alt="UTF-8 Lexer"/>
