@@ -264,10 +264,5 @@ __pycache__/
 # CMake build directory
 build
 
-# Cppcheck build directory
-analysis-cppcheck-build-dir
-
-# Ideas directory
-ideas
-
-desktop.iniimages/
+desktop.ini
+images/
