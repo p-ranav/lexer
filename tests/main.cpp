@@ -2,5 +2,9 @@
 #include <catch.hpp>
 #include <test_lexer_comments.hpp>
 #include <test_lexer_double.hpp>
+#include <test_lexer_identifier.hpp>
 #include <test_lexer_integer.hpp>
 #include <test_lexer_keywords.hpp>
+#include <test_lexer_punctuation.hpp>
+#include <test_lexer_string.hpp>
+#include <test_lexer_whitespace.hpp>

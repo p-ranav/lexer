@@ -14,8 +14,6 @@ std::string Lexer::ReadCharacter(bool aUpdateIndex) {
   if (mIndex < mSource.size())
     tLength = GetUTF8SequenceLength(&(mSource[mIndex]));
 
-  assert(tLength >= 0);
-
   for (int i = 0; i < tLength; i++, mIndex++)
     tResult += mSource[mIndex];
 
@@ -172,7 +170,7 @@ void Lexer::ReadString() {
         tToken.mLiteral += '\n';
       }
 
-      if (tCharacter[0] == 0x0a || tCharacter[0] == EOF) {
+      if (tCharacter[0] == 0x0A || tCharacter[0] == EOF) {
         // TODO: report unterminated string literal
       }
 
@@ -416,7 +414,7 @@ void Lexer::Tokenize() {
         ReadCharacter();
         mCursor = 1;
       }
-
+      continue;
     }
   }
 
