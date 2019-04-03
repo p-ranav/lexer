@@ -2,7 +2,7 @@
 
 * Lightweight implementation in C++
 * Supports UTF-8 multi-byte characters
-* 50+ unit tests
+* 60+ unit tests
 * Valgrind memory leak checked
 
 ## Quick Start
