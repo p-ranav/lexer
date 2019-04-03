@@ -2,6 +2,7 @@
 #include <catch.hpp>
 #include <lexer.hpp>
 #include <clocale>
+using namespace lexer;
 
 TEST_CASE("Double '0.0'", "[lexer]") {
   std::string tFileName = "";

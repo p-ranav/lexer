@@ -2,6 +2,7 @@
 #include <catch.hpp>
 #include <lexer.hpp>
 #include <clocale>
+using namespace lexer;
 
 TEST_CASE("Keyword 'null'", "[lexer]") {
   std::string tFileName = "";
@@ -30,7 +31,7 @@ TEST_CASE("Keyword 'true'", "[lexer]") {
   REQUIRE(tLexer.mTokens[0].mFileName == "");
   REQUIRE(tLexer.mTokens[0].mLine == 1);
   REQUIRE(tLexer.mTokens[0].mCursor == 1);
-  REQUIRE(tLexer.mTokens[0].mType == TokenType::TRUE);
+  REQUIRE(tLexer.mTokens[0].mType == TokenType::TRUE_);
   REQUIRE(tLexer.mTokens[0].mLiteral == "true");
   REQUIRE(tLexer.mTokens[1].mFileName == "");
   REQUIRE(tLexer.mTokens[1].mLine == 1);
@@ -48,7 +49,7 @@ TEST_CASE("Keyword 'false'", "[lexer]") {
   REQUIRE(tLexer.mTokens[0].mFileName == "");
   REQUIRE(tLexer.mTokens[0].mLine == 1);
   REQUIRE(tLexer.mTokens[0].mCursor == 1);
-  REQUIRE(tLexer.mTokens[0].mType == TokenType::FALSE);
+  REQUIRE(tLexer.mTokens[0].mType == TokenType::FALSE_);
   REQUIRE(tLexer.mTokens[0].mLiteral == "false");
   REQUIRE(tLexer.mTokens[1].mFileName == "");
   REQUIRE(tLexer.mTokens[1].mLine == 1);
@@ -138,7 +139,7 @@ TEST_CASE("Keyword 'in'", "[lexer]") {
   REQUIRE(tLexer.mTokens[0].mFileName == "");
   REQUIRE(tLexer.mTokens[0].mLine == 1);
   REQUIRE(tLexer.mTokens[0].mCursor == 1);
-  REQUIRE(tLexer.mTokens[0].mType == TokenType::IN);
+  REQUIRE(tLexer.mTokens[0].mType == TokenType::IN_);
   REQUIRE(tLexer.mTokens[0].mLiteral == "in");
   REQUIRE(tLexer.mTokens[1].mFileName == "");
   REQUIRE(tLexer.mTokens[1].mLine == 1);

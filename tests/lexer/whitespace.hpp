@@ -2,6 +2,7 @@
 #include <catch.hpp>
 #include <lexer.hpp>
 #include <clocale>
+using namespace lexer;
 
 TEST_CASE("Whitespace ' '", "[lexer]") {
   std::string tFileName = "";
